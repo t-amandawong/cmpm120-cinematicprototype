@@ -5,8 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CMPM 120 Cinematic Prototype</title>
+    <script src="./phaser.js"></script>
+    <script src="./noninteractive.js"></script>
+    <script>
+      let gameconfig = {
+        width: 1920,
+        height: 1080,
+        scene: [NonInteractive],
+        scale: {mode: Phaser.Scale.ScaleModes.FIT},
+        pixelArt: true
+      };
+      const game = new Phaser.Game(gameconfig);
+    </script>
 </head>
 <body>
-  <h1>cinematic prototype</h1>
 </body>
 </html>
