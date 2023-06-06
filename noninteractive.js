@@ -51,14 +51,26 @@ class NonInteractive extends Phaser.Scene {
          paused: true
       });
 
-      this.tweens.add({
+      let oneDrop = this.tweens.add({
          targets: one,
          y: {start: -0.5 * h, to: 0.5 * h},
          duration: 800,
          onComplete: () => {
             impactSound.play();
             this.time.delayedCall(50, () => sevenDrop.play());
-         }
+         },
+         paused: true
+      });
+
+      let instruction = this.add.text(0.5 * w, 0.5 * h, "Sounds will not play until the player interacts with the game canvas, so please tap when you are ready to begin.")
+         .setOrigin(0.5)
+         .setFontSize(32)
+         .setWordWrapWidth(800)
+         .setColor("#ffffff");
+
+      this.input.on("pointerdown", () => {
+         instruction.setAlpha(0);
+         oneDrop.play();
       });
    }
 
