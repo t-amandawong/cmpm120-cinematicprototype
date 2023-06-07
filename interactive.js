@@ -19,6 +19,36 @@ class Interactive extends Phaser.Scene {
          .setScale(5)
          .setTint(0x222438);
       
+      let ghost = this.add.image(this.w * 0.9, this.h * 0.65, "ghost").setScale(2);
+      let ghostBob = this.tweens.add({
+         targets: ghost,
+         y: `+= ${0.04 * this.h}`,
+         duration: 800,
+         ease: "sine.InOut",
+         yoyo: true,
+         repeat: -1
+      });
+      let ghostWander = this.tweens.add({
+         targets: ghost,
+         x: {start: this.w * 0.9, to: this.w * 0.1},
+         duration: 6400,
+         yoyo: true,
+         flipX: true,
+         loopDelay: 600,
+         repeat: -1
+      });
+      let ghostFade = this.tweens.add({
+         targets: ghost,
+         alpha: {from: 1, to: 0},
+         duration: 800,
+         onComplete: () => {
+            ghostBob.stop();
+            ghostWander.stop();
+            ghost.destroy();
+         },
+         paused: true
+      });
+
       this.fg = this.add.image(this.w / 2, this.h / 2, "titleFgImg")
          .setOrigin(0.5)
          .setScale(5)
@@ -59,19 +89,29 @@ class Interactive extends Phaser.Scene {
       });
 
       let playButtonBG = this.add.image(0, 0, "menuBtn").setOrigin(0.5);
-      let playButtonText = this.add.text(0, 0, "PLAY").setOrigin(0.5).setFontSize(40).setColor(0x111111);
+      let playButtonText = this.add.text(0, 0, "PLAY").setOrigin(0.5).setFontSize(40).setColor("#111111");
       let playButton = this.add.group([playButtonBG, playButtonText]).setX(0.5 * this.w).setY(0.5 * this.h);
 
       let settingsBtnBG = this.add.image(0, 0, "menuBtn").setOrigin(0.5);
-      let settingsBtnText = this.add.text(0, 0, "SETTINGS").setOrigin(0.5).setFontSize(40).setColor(0x111111);
+      let settingsBtnText = this.add.text(0, 0, "SETTINGS").setOrigin(0.5).setFontSize(40).setColor("#111111");
       let settingsButton = this.add.group([settingsBtnBG, settingsBtnText]).setX(0.5 * this.w).setY(0.7 * this.h);
+
+      let settingsPlaceholderBacking = this.add.rectangle(0, 0, this.w / 4, this.h / 4, 0xababab);
+      let settingsPlaceholderText = this.add.text(0, 0, "Settings go here")
+         .setOrigin(0.5)
+         .setColor("#111111")
+         .setFontSize(40);
+      let settingsPlaceholderArea = this.add.group([settingsPlaceholderBacking, settingsPlaceholderText])
+         .setX(this.w / 2)
+         .setY(this.h / 2)
+         .setAlpha(0);
 
       let settingsConfirmBG = this.add.image(0, 0, "menuBtn")
          .setOrigin(0.5)
          .setAlpha(0);
       let settingsConfirmTxt = this.add.text (0, 0, "Confirm")
          .setFontSize(40)
-         .setColor(0x111111)
+         .setColor("#111111")
          .setOrigin(0.5)
          .setAlpha(0);
       let settingsConfirmBtn = this.add.group([settingsConfirmBG, settingsConfirmTxt]).setX(this.w * 0.35).setY(this.h * 0.8);
@@ -81,7 +121,7 @@ class Interactive extends Phaser.Scene {
          .setAlpha(0);
       let settingsCancelTxt = this.add.text (0, 0, "Cancel")
          .setFontSize(40)
-         .setColor(0x111111)
+         .setColor("#111111")
          .setOrigin(0.5)
          .setAlpha(0);
       let settingsCancelBtn = this.add.group([settingsCancelBG, settingsCancelTxt]).setX(this.w * 0.65).setY(this.h * 0.8);
@@ -89,11 +129,13 @@ class Interactive extends Phaser.Scene {
       settingsConfirmBG.on("pointerdown", () => {
          this.changeMenu([settingsConfirmBtn, settingsCancelBtn], [playButton, settingsButton]);
          this.titleObj.setAlpha(1);
+         settingsPlaceholderArea.setAlpha(0);
       });
 
       settingsCancelBG.on("pointerdown", () => {
          this.changeMenu([settingsConfirmBtn, settingsCancelBtn], [playButton, settingsButton]);
          this.titleObj.setAlpha(1);
+         settingsPlaceholderArea.setAlpha(0);
       });
       
       let buttonsReveal = this.tweens.add({
@@ -103,15 +145,13 @@ class Interactive extends Phaser.Scene {
          paused: true,
          onComplete: () => {
             playButtonBG.setInteractive()
-               .on("pointerdown", () => {
-                  // TODO: add a placeholder level select screen and transition to that
-                  console.log("Tapped on the play button");
-               });
+               .on("pointerdown", () => this.scene.start("placeholder"));
             
             settingsBtnBG.setInteractive()
                .on("pointerdown", () => {
                   this.changeMenu([playButton, settingsButton], [settingsConfirmBtn, settingsCancelBtn]);
                   this.titleObj.setAlpha(0);
+                  settingsPlaceholderArea.setAlpha(1);
                });
          }
       });
@@ -119,6 +159,8 @@ class Interactive extends Phaser.Scene {
       this.input.once("pointerdown", () => {
          promptFlash.stop();
          prompt.destroy();
+
+         ghostFade.play();
          
          this.counter.play();
          sunrise.play();
@@ -155,5 +197,18 @@ class Interactive extends Phaser.Scene {
          element.setAlpha(1);
          element.children.getArray()[0].setInteractive();
       });
+   }
+}
+
+class Placeholder extends Phaser.Scene {
+   constructor() {
+      super("placeholder");
+   }
+
+   create() {
+      let w = this.game.config.width;
+      let h = this.game.config.height;
+
+      this.add.text(w / 2, h / 2, "Hub world goes here").setOrigin(0.5).setFontSize(80);
    }
 }

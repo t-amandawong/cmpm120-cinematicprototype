@@ -10,6 +10,7 @@ class NonInteractive extends Phaser.Scene {
       this.load.image("teamname", "images/TeamName.png");
       this.load.image("moon", "images/Moon.png");
       this.load.image("sun", "images/Sun.png");
+      this.load.image("ghost", "images/Ghost.png");
       this.load.image("titleTxt", "images/GameTitleText.png");
       this.load.image("titleBg", "images/GameTitleBG.png");
       this.load.image("menuBtn", "images/MenuButton.png");
