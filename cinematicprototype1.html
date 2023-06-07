@@ -7,11 +7,12 @@
     <title>CMPM 120 Cinematic Prototype</title>
     <script src="./phaser.js"></script>
     <script src="./noninteractive.js"></script>
+    <script src="./interactive.js"></script>
     <script>
       let gameconfig = {
         width: 1920,
         height: 1080,
-        scene: [NonInteractive],
+        scene: [NonInteractive, Interactive],
         scale: {mode: Phaser.Scale.ScaleModes.FIT},
         pixelArt: true
       };

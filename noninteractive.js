@@ -8,6 +8,13 @@ class NonInteractive extends Phaser.Scene {
       this.load.image("one", "images/Numeral1.png");
       this.load.image("seven", "images/Numeral7.png");
       this.load.image("teamname", "images/TeamName.png");
+      this.load.image("moon", "images/Moon.png");
+      this.load.image("sun", "images/Sun.png");
+      this.load.image("titleTxt", "images/GameTitleText.png");
+      this.load.image("titleBg", "images/GameTitleBG.png");
+      this.load.image("menuBtn", "images/MenuButton.png");
+      this.load.image("titleBgImg", "images/TitleSceneBackground.png");
+      this.load.image("titleFgImg", "images/TitleSceneForeground.png");
       this.load.audio("impact", "sounds/GroundImpact.wav");
       this.load.audio("jingle", "sounds/jingle.mp3");
    }
@@ -33,8 +40,7 @@ class NonInteractive extends Phaser.Scene {
             team.postFX.addShine(1);
             jingle.play();
             this.time.delayedCall(600, () => this.cameras.main.fadeOut(1000, 0, 0, 0, (c, t) => {
-               // TODO: add interactive cinematic scene and transition to that
-               if (t >= 1) console.log("Fadeout complete");
+               if (t >= 1) this.scene.start("interactive");
             }));
          },
          paused: true
